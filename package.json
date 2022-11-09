@@ -1,0 +1,32 @@
+{
+	"name": "beria",
+	"version": "0.0.1",
+	"main": "./src/index.ts",
+	"author": "August Luzanovsky",
+	"license": "MIT",
+	"private": false,
+    "engines": {
+        "node": "16.17.*",
+        "npm": "8.19.*",
+        "yarn": "1.22.*"
+    },
+    "keywords": [
+        "zalupa"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bringmetheaugust/Beria"
+    },
+	"scripts": {
+		"dev": "ts-node ./src/index.ts",
+        "ci-build": "npx tsc"
+	},
+	"dependencies": {
+		"glob": "^8.0.3"
+	},
+	"devDependencies": {
+		"typescript": "^4.8.4",
+        "ts-node": "^10.9.1",
+        "@types/glob": "^8.0.0"
+	}
+}

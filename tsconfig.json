@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+        "resolveJsonModule": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "module": "commonjs",
+        "sourceMap": true,
+        "lib": ["esnext", "dom"],
+        "strict": true,
+        "target": "es2017"
+	},
+    "exclude": ["node_modules", "dist", ".vscode"],
+    "include": ["src"],
+}
