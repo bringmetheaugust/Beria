@@ -1,5 +1,7 @@
 import { sync } from 'glob';
-import { promises } from 'fs';
+import { createReadStream } from 'fs';
+import { resolve } from 'path';
+import { createInterface } from 'readline';
 
 import { ConfigDTO, SearchRuleDTO } from './dto';
 import { logger } from './utils';
@@ -16,15 +18,20 @@ async function scanRule({ folder, fileExtention, targets }: SearchRuleDTO): Prom
         sync(`${folder}/*.${fileExtention}`).
         map(async (filePath: string): Promise<void> => {
             try {
-                const fileData: string = await promises.readFile(filePath, { encoding: 'utf-8' });
-                const cases: RegExpMatchArray | null = fileData.match(targets);
-                
-                if (cases?.length) {
-                    cases.forEach((ptrn: string) => {
-                        logger.err(`File ${filePath} has forbidden target "${ptrn}".`);
+                const rl = createInterface({ input: createReadStream(filePath), crlfDelay: Infinity });
+                let lineCounter: number = 0;
 
+                for await (const line of rl) {
+                    const cases = line.match(targets);
+
+                    if (cases?.length) {
                         forbiddenCaseCount++;
-                    })
+                        cases.forEach((ptrn: string) => {
+                            logger.err(`File ${filePath}:${lineCounter} has the forbidden target "${ptrn}":\n   ${line}`);
+                        });
+                    }
+
+                    lineCounter++;
                 }
             } catch(_) {
                 logger.warning(`Skip ${filePath} because of error during reading this file.`);
@@ -40,9 +47,7 @@ async function scanRule({ folder, fileExtention, targets }: SearchRuleDTO): Prom
  */
 async function parseConfigFile(): Promise<ConfigDTO> {
     try {
-        const config = await promises.readFile('./beria.config.json', 'utf-8');
-
-        return new ConfigDTO(JSON.parse(config));
+        return new ConfigDTO(await import(resolve() + '/beria.config.json'));
     } catch(err) {
         logger.err('Config file not found.'); process.exit(1);
     }

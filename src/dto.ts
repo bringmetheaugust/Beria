@@ -6,7 +6,12 @@ export class SearchRuleDTO implements SearchRuleI<RegExp> {
     fileExtention: string;
     targets: RegExp;
 
-    constructor({ folder, fileExtention, targets, withRegister = false }: SearchRuleI) {
+    constructor({
+        folder = '*',
+        fileExtention = '*',
+        targets,
+        withRegister = false
+    }: SearchRuleI) {
         try {
             switch(true) {
                 case Boolean(!targets):
@@ -20,8 +25,8 @@ export class SearchRuleDTO implements SearchRuleI<RegExp> {
             logger.err(`Invalid search rule configuration: ${message}`); process.exit(2);
         }
 
-        this.folder = folder || '*';
-        this.fileExtention = fileExtention || '*';
+        this.folder = folder;
+        this.fileExtention = fileExtention;
         this.targets = new RegExp(`(${targets.join('|')})`, `g${withRegister ? '' : 'i'}`);
     }
 }
@@ -30,7 +35,7 @@ export class ConfigDTO implements ConfigI<SearchRuleI<RegExp>> {
     include: SearchRuleDTO[];
     onlyWarnings: boolean;
 
-    constructor({ include, onlyWarning }: ConfigI) {
+    constructor({ include, onlyWarning = false }: ConfigI) {
         try {
             switch(true) {
                 case Boolean(!include):
@@ -43,6 +48,6 @@ export class ConfigDTO implements ConfigI<SearchRuleI<RegExp>> {
         }
 
         this.include = include.map(rule => new SearchRuleDTO(rule));
-        this.onlyWarnings = typeof onlyWarning === 'undefined' ? false : onlyWarning;
+        this.onlyWarnings = onlyWarning;
     }
 }
