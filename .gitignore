@@ -1,7 +1,11 @@
 .vscode
 
 node_modules/
-dist/
-test/
 
+dist/
+
+test
+jest.config.json
+
+mocks
 beria.config.json

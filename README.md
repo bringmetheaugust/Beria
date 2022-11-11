@@ -1,22 +1,33 @@
 # Beria 🦅
 
-Витя, получишь пизды, если будешь юзать `margin-top`.    
+Витя, получишь пизды, если будешь использовать `margin-top`.    
 
-<!-- **npm** package for scanning files and searching content by strings/substrings/chars/regExp.    
+**npm** package for scanning files and searching content by strings/substrings/chars/regExp.
 
 ## Intro
 
-The most relevant usage is looking for "forbidden" code in Your project. For example, Your team agreed don't use `padding` or `margin` in Your *CSS*/*Scss* files, but someone still use it. Beria will scan Your project and will find this "forbidden" content. The most usefull usage with a pre-commit *git* hooks.
+The most relevant usage is looking for "forbidden" text/code in Your project.    
+For example, Your team agreed don't use `padding` or `margin` in Your *CSS*/*Scss* files, but someone still uses it. *Beria* will scan Your project and find this "forbidden" content.    
+The most practical use with pre-commit *git hooks*.
 
 ## Quick start
 
- * install package using `npm i @beria` or `yarn @beria -D`
- * create `beria.conf.json` config file inside root directory
+ * install package using `npm i beria --save-dev` or `yarn beria -D`
+ * create `beria.config.json` config file inside root directory
+ * run `npx beria`
 
 ## Config file examples
 
 <details>
-    <summary>Simple config example</summary>
+    <summary>Simple config</summary>
+    <ul>
+        <li>
+            Looking for <code>margin-top</code> and <code>margin-right</code> strings in <b>.scss</b> files inside <b>styles</b> folder
+        </li>
+        <li>
+            Package exits with the error if one of these strings was detected
+        </li>
+    </ul>
     <pre>
     {
         "include": [
@@ -34,7 +45,28 @@ The most relevant usage is looking for "forbidden" code in Your project. For exa
 </details>
 
 <details>
-    <summary>Advanced config example</summary>
+    <summary>Advanced config</summary>
+    <ul>
+        <li>
+            <div>
+                Looking for <code>margin-top</code> and <code>margin-right</code> strings in <b>.scss</b> files inside <b>styles</b> folder.
+            <div>
+            <div>
+                <code>Margin-Top</code> or <code>margiN-Right</code> will'nt be founded cause <code>withRegister</code> option is <b>on</b>.
+            </div>
+        </li>
+        <li>
+            <div>
+                Also looking for <code>zalupa</code> string in <b>.ts</b> files inside <b>types</b> folder.
+            <div>
+            <div>
+                <code>Zalupa</code> or <code>zAlupA</code> strings will be detected cause <code>withRegister</code> option is <b>off</b>.
+            </div>
+        </li>
+        <li>
+            package show all founded cases but doesn't exit with the error cause <code>onlyWarning</code> option is <b>on</b>.
+        </li>
+    </ul>
     <pre>
     {
         "include": [
@@ -48,10 +80,10 @@ The most relevant usage is looking for "forbidden" code in Your project. For exa
                 "withRegister": true
             },
             {
-                "folder": "src",
+                "folder": "types",
                 "fileExtention": "ts",
                 "targets": [ "zalupa" ],
-                "withRegister": true
+                "withRegister": false
             },
         ],
         "onlyWarning": true
@@ -59,7 +91,7 @@ The most relevant usage is looking for "forbidden" code in Your project. For exa
     </pre>
 </details>
 
-## Config options
+<!-- ## Config options
 
 * **include** (type: `object`, required)
 

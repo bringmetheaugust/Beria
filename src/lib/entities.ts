@@ -1,7 +1,7 @@
-import { ConfigI, SearchRuleI } from './interfaces';
+import { ConfigI, OptionsI, SearchRuleI } from './interfaces';
 import { logger } from './utils';
 
-export class SearchRuleDTO implements SearchRuleI<RegExp> {
+export class SearchRule implements SearchRuleI<RegExp> {
     folder: string;
     fileExtention: string;
     targets: RegExp;
@@ -22,7 +22,7 @@ export class SearchRuleDTO implements SearchRuleI<RegExp> {
                     throw new Error('"fileExtention" field shouldn\'t have a dot.');
             }
         } catch({ message }) {
-            logger.err(`Invalid search rule configuration: ${message}`); process.exit(2);
+            logger(`Invalid search rule configuration: ${message}`, 'err'); process.exit(2);
         }
 
         this.folder = folder;
@@ -31,8 +31,8 @@ export class SearchRuleDTO implements SearchRuleI<RegExp> {
     }
 }
 
-export class ConfigDTO implements ConfigI<SearchRuleI<RegExp>> {
-    include: SearchRuleDTO[];
+export class Config implements ConfigI<SearchRuleI<RegExp>> {
+    include: SearchRule[];
     onlyWarnings: boolean;
 
     constructor({ include, onlyWarning = false }: ConfigI) {
@@ -44,10 +44,18 @@ export class ConfigDTO implements ConfigI<SearchRuleI<RegExp>> {
                     throw new Error('"include" field must has at least 1 rule object.');
             }
         } catch({ message }) {
-            logger.err(`Invalid configuration: ${message}`); process.exit(2);
+            logger(`Invalid configuration: ${message}`, 'err'); process.exit(2);
         }
 
-        this.include = include.map(rule => new SearchRuleDTO(rule));
+        this.include = include.map(rule => new SearchRule(rule));
         this.onlyWarnings = onlyWarning;
+    }
+}
+
+export class Options implements OptionsI {
+    configSrc: string;
+
+    constructor({ configSrc = '/beria.config.json' }: OptionsI) {
+        this.configSrc = configSrc;
     }
 }

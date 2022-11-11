@@ -1,0 +1,13 @@
+.vscode
+
+node_modules
+
+test
+src
+mocks
+
+.nvmrc
+
+tsconfig.json
+tsconfig.prod.json
+beria.config.json

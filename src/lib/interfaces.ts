@@ -9,3 +9,7 @@ export interface ConfigI<SR = SearchRuleI> {
     include: SR[],
     onlyWarning?: boolean,
 }
+
+export interface OptionsI {
+    configSrc?: string
+}
