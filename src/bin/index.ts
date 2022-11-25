@@ -1,18 +1,39 @@
 #!/usr/bin/env node
 
-export type CLICommandT = {
-    [ command: string ]: () => Promise<(argv?: string[]) => void>
-};
+const { argv } = process;
+const args = parseFlags(argv);
 
-const [ cmd ] = process.argv.slice(2);
+if (argv.includes('--help')) {
+    console.log(
+        `There are no commands for this package🦅.
 
-const DEFAULT_CMD = 'scan';
-const COMMANDS: CLICommandT = {
-  scan: () => Promise.resolve(require('../lib/index').scan),
-  help: () => Promise.resolve(() => console.log('I cann\'t help U)'))
+Options:
+    --config
+        Set another path to Your config file.
+        Example: --config=myfolder/conf.json
+        By default package looks for default beria.config.json config file inside project folder.
+
+    --onlyWarning
+        By default, programm exist with error status if search was successful.
+        This option disable this behavior.
+`
+    );
+} else {
+    Promise.resolve(require('../lib/index').scan(args));
 }
 
-const existedCommand = Boolean(COMMANDS[cmd]);
-const command = existedCommand ? cmd : DEFAULT_CMD;
+/**
+ * @description parse cmd flags and pack them to the object
+ * @param {Array} args array of CMD arguments
+ * @returns object with parsed flags
+ */
+function parseFlags(args: string[]): { [key: string]: string } {
+    return args
+        .filter(arg => arg.startsWith('-'))
+        .map(arg => arg.replace(/^(-)*/, ''))
+        .reduce((acc, curr) => {
+            const [key, val] = curr.split('=');
 
-COMMANDS[command]().then((exec) => exec());
+            return ({ ...acc, [key]: typeof val === 'undefined' ? true : val })
+        }, {});
+}

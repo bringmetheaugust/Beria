@@ -13,7 +13,7 @@ export class SearchRule implements SearchRuleI<RegExp> {
         withRegister = false
     }: SearchRuleI) {
         try {
-            switch(true) {
+            switch (true) {
                 case Boolean(!targets):
                     throw new Error('"targets" field is required.');
                 case !targets.length:
@@ -21,7 +21,7 @@ export class SearchRule implements SearchRuleI<RegExp> {
                 case (fileExtention as string).includes('.'):
                     throw new Error('"fileExtention" field shouldn\'t have a dot.');
             }
-        } catch({ message }) {
+        } catch ({ message }) {
             logger(`Invalid search rule configuration: ${message}`, 'err'); process.exit(2);
         }
 
@@ -33,29 +33,35 @@ export class SearchRule implements SearchRuleI<RegExp> {
 
 export class Config implements ConfigI<SearchRuleI<RegExp>> {
     include: SearchRule[];
-    onlyWarnings: boolean;
+    onlyWarning: boolean;
 
     constructor({ include, onlyWarning = false }: ConfigI) {
         try {
-            switch(true) {
+            switch (true) {
                 case Boolean(!include):
                     throw new Error('"include" field is required.');
                 case include.length < 1:
                     throw new Error('"include" field must has at least 1 rule object.');
             }
-        } catch({ message }) {
+        } catch ({ message }) {
             logger(`Invalid configuration: ${message}`, 'err'); process.exit(2);
         }
 
         this.include = include.map(rule => new SearchRule(rule));
-        this.onlyWarnings = onlyWarning;
+        this.onlyWarning = onlyWarning;
     }
 }
 
 export class Options implements OptionsI {
-    configSrc: string;
+    config: string;
+    onlyWarning?: boolean
 
-    constructor({ configSrc = '/beria.config.json' }: OptionsI) {
-        this.configSrc = configSrc;
+    constructor({
+        config = 'beria.config.json',
+        onlyWarning,
+    }: OptionsI) {
+        this.config = config;
+
+        if (onlyWarning) this.onlyWarning = onlyWarning;
     }
 }

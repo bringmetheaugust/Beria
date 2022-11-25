@@ -60,27 +60,28 @@ export async function scanRule({ folder, fileExtention, targets }: SearchRule): 
  * @param {String} configPath config file source path
  * @return parsed config data
  */
-export async function parseConfigFile(configPath: Options['configSrc']): Promise<Config> {
+export async function parseConfigFile(configPath: Options['config']): Promise<Config> {
     try {
-        return new Config(await import(resolve() + configPath));
+        return new Config(await import(resolve() + `/${configPath}`));
     } catch(err) {
         logger('Config file not found or has invalid JSON format.', 'err'); process.exit(1);
     }
 }
 
 /**
- * @description run scanning files by presented options
- * @param {OptionsI} options scan configuration by config files or CLI flags/agruments
+ * @description run scanning files by presented options from CMD
+ * @param {OptionsI} options options from CLI by flags/agruments
  */
 export async function scan(options: OptionsI = {}): Promise<void> {
-    const { configSrc } = new Options(options);
-    const { include, onlyWarnings } = await parseConfigFile(configSrc);
+    const { config, ...cmdConfig } = new Options(options);
+    const configFromFile = await parseConfigFile(config);
+    const { onlyWarning, include } = { ...configFromFile, ...cmdConfig };
 
     logger('Start scanning...', 'info');
 
     const scannedResult: boolean[] = await Promise.all(include.map((rule: SearchRule) => scanRule(rule)));
 
-    !onlyWarnings && scannedResult.some((searchRes: boolean) => searchRes) && process.exit(1);
+    !onlyWarning && scannedResult.some((searchRes: boolean) => searchRes) && process.exit(1);
 
     logger('Well done!', 'info');
 }

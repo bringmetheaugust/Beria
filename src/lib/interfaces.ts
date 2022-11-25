@@ -10,6 +10,6 @@ export interface ConfigI<SR = SearchRuleI> {
     onlyWarning?: boolean,
 }
 
-export interface OptionsI {
-    configSrc?: string
+export interface OptionsI extends Omit<ConfigI, 'include'> {
+    config?: string
 }

@@ -7,7 +7,7 @@
 ## Intro
 
 The most relevant usage is looking for "forbidden" text/code in Your project.    
-For example, Your team agreed don't use `padding` or `margin` in Your *CSS*/*Scss* files, but someone still uses it. *Beria* will scan Your project and find this "forbidden" content.    
+For example, Your team agreed don't use `padding` or `margin` in Your *CSS*/*Scss*/*Sass* files, but someone still uses it. *Beria* will scan Your project and find this "forbidden" content.    
 The most practical use with pre-commit *git hooks*.
 
 ## Quick start
@@ -102,3 +102,16 @@ The most practical use with pre-commit *git hooks*.
 * **onlyWarning** (type: `boolean`, default: `false`)
 
   By default, process exits with error status code if forbidden targets were founded. `onlyWarning: true` will disable this behavior. -->
+
+## Options
+
+ ##### You should know that CLI options have higher priority than options from the config file.
+
+ * `--config`    
+
+    By default package looks for default `beria.config.json` config file inside project folder. You can set another path to Your config file. Example: `--config=myfolder/conf.json`
+
+ * `--onlyWarning`
+
+    By default, programm exist with error status if search was successful.
+    The option disable this behavior.
